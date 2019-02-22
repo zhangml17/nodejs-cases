@@ -14,7 +14,7 @@ sudo ln -s /home/command-line-pro/node-echo/bin/node-echo.js /usr/local/bin/node
 + 效果
 $ node-echo  Hello World
 
-Hello World
+    Hello World
 # 参考
 + http://nqdeng.github.io/7-days-nodejs/#1.4.1
 + https://segmentfault.com/q/1010000000753040
