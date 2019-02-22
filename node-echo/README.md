@@ -12,6 +12,7 @@ chmod +x /node-echo/bin/node-echo.js
 sudo ln -s /home/command-line-pro/node-echo/bin/node-echo.js /usr/local/bin/node-echo
 
 + 效果
+
 $ node-echo  Hello World
 
     Hello World
