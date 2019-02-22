@@ -8,8 +8,8 @@
 + 赋予node-echo.js文件执行权限
 chmod +x /node-echo/bin/node-echo.js
 
-+ 建立软链接，方便任何目录下使用node-echo命令
-sudo ln -s /node-echo/bin/node-echo.js /usr/local/bin/node-echo
++ 建立软链接(源目录一定要用绝对路径)，方便任何目录下使用node-echo命令
+sudo ln -s /home/command-line-pro/node-echo/bin/node-echo.js /usr/local/bin/node-echo
 
 
 # 参考
