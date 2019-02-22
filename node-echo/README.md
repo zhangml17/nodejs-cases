@@ -13,5 +13,5 @@ sudo ln -s /node-echo/bin/node-echo.js /usr/local/bin/node-echo
 
 
 # 参考
-http://nqdeng.github.io/7-days-nodejs/#1.4.1
-https://segmentfault.com/q/1010000000753040
++ http://nqdeng.github.io/7-days-nodejs/#1.4.1
++ https://segmentfault.com/q/1010000000753040
