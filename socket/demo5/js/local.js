@@ -1,10 +1,15 @@
+/**
+ * 
+ * 我的游戏区中的逻辑
+ * 
+ */
 var Local = function(socket){
 
     // 游戏对象
     var game;
 
     // 下落时间
-    var INTERVAL = 500;
+    var INTERVAL = 2000;
     // 定时器
     var timer = null;
     // 事件计数器
@@ -16,14 +21,19 @@ var Local = function(socket){
         document.onkeydown = function(e){
             if(e.keyCode == 38){// up/旋转
                 game.rotate();
+                socket.emit('rotate');
             }else if(e.keyCode == 39){ // right
                 game.right();
+                socket.emit('right');
             }else if(e.keyCode == 40){ // down
                 game.down();
+                socket.emit('down');
             }else if(e.keyCode == 37){ // left
                 game.left();
+                socket.emit('left');
             }else if(e.keyCode == 32){ // space
                 game.fall();
+                socket.emit('fall');
             }
         }
     }
@@ -33,18 +43,32 @@ var Local = function(socket){
         timeFunct();
         if(!game.down()){
             game.fixed();
+            socket.emit('fixed');
             var line =  game.checkClear();
             if(line){
                 game.addScore(line);
+                socket.emit('line',line);
+                // 当一次消除的行数大于1时，给对方添加干扰行
+                if(line>1){
+                    var bottomLines = generateBottomLine(line);
+                    socket.emit('bottomLines',bottomLines);
+                }
             }
             var gameOver =  game.checkGameover();
 
             if(gameOver){
                 game.gameOver(false);
+                document.getElementById('remote_gameover').innerHTML = 'You Win';
+                socket.emit('lose');
                 stop();
             }else{
-                game.performNext(generateType(),generateDir());
+                var t = generateType();
+                var d = generateDir();
+                game.performNext(t,d);
+                socket.emit('next',{type:t,dir:d});
             }
+        }else{
+            socket.emit('down');
         }
     }
 
@@ -55,9 +79,7 @@ var Local = function(socket){
             timeCount = 0;
             time += 1;
             game.setTime(time);
-            if(time % 10 == 0){
-                game.addTailLines(generateBottomLine(1));
-            }
+            socket.emit('time',time);
         }
     }
     // 随机生成一个方块种类(0-6)
@@ -92,9 +114,19 @@ var Local = function(socket){
             resultDiv:document.getElementById('local_gameover')
         }
         game = new Game();
-        game.init(doms,generateType(),generateDir());
+
+        var type = generateType();
+        var dir = generateDir();
+        game.init(doms,type,dir);
+        socket.emit('init',{type:type,dir:dir});
+
         bindKeyEvent();
-        game.performNext(generateType(),generateDir());
+
+        var t = generateType();
+        var d = generateDir();
+        game.performNext(t,d);
+        socket.emit('next',{type:t,dir:d});
+
         timer = setInterval(move,INTERVAL);
     }
     // 结束
@@ -108,5 +140,26 @@ var Local = function(socket){
     socket.on('start',function(){
         document.getElementById('waiting').innerHTML = '';
         start();
-    })
+    });
+
+    socket.on('lose',function(){
+        game.gameOver(true);
+        stop();
+    });
+
+    socket.on('leave',function(){
+        document.getElementById('local_gameover').innerHTML = '对方掉线';
+        document.getElementById('remote_gameover').innerHTML = '已掉线';
+        stop();
+    });
+
+    socket.on('bottomLines',function(data){
+        game.addTailLines(data);
+        socket.emit('addTailLines',data);
+    });
+    // 这个waiting事件本来是在script.js文件中的
+    // 个人认为将其放在这里最为直观
+    socket.on('waiting',function(str){
+        document.getElementById('waiting').innerHTML = str; 
+    });
 }

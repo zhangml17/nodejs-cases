@@ -42,7 +42,14 @@ var Game = function(){
     var gameDivs = [];
     var nextDivs = [];
 
-    // 初始化div
+    
+    /**
+     * Function: 初始化元div,绘制游戏区域和提示区域
+     * 
+     * @param {*} container : DOM元素 
+     * @param {*} data :  游戏区域或提示区域的矩阵数据
+     * @param {*} divs :  三维数组，每个数组元素表示一个20*20的div，即组成俄罗斯方块的元div数据
+     */
     var initDiv = function(container,data,divs){
         for(var i=0;i<data.length;i++){
             var div = [];
@@ -58,7 +65,12 @@ var Game = function(){
         }
     }
 
-    // 刷新div
+    /**
+     * Function: 通过判断矩阵数据中的每一个数据的值(0|1|2)，设置className属性(即赋予不同的div样式颜色等)
+     * 
+     * @param {*} data : 游戏区域或提示区域的矩阵数据
+     * @param {*} divs : 三维数组，每个数组元素表示一个20*20的div，即组成俄罗斯方块的元div数据
+     */
     var refreshDiv = function(data,divs){
         for(var i=0;i<data.length;i++){
             for(var j=0;j<data[0].length;j++){
@@ -73,7 +85,13 @@ var Game = function(){
         }
     }
 
-    // 检测点是否合法
+    /**
+     * Function: 检测图形的位置是否超出了游戏区域的边界
+     * 
+     * @param {*} pos : 
+     * @param {*} x   : 
+     * @param {*} y   : 
+     */
     var check = function(pos,x,y){
         if(pos.x+x<0){ // 超出上边界
             return false;
@@ -227,7 +245,12 @@ var Game = function(){
         }
         return gameOVer;
     }
-    // 使用下一个方块
+    /**
+     * Function: 游戏区使用提示区的方块，提示区随机重新创建方块
+     * 
+     * @param {*} type : 其中方块的索引 7种
+     * @param {*} dir  : 方块变换的方向 4种
+     */
     var performNext = function(type,dir){
         cur = next ;
         setData();
